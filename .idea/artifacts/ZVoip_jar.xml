@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="ZVoip:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/ZVoip_jar</output-path>
+    <root id="archive" name="ZVoip.jar">
+      <element id="module-output" name="ZVoip" />
+      <element id="library" level="project" name="gson-2.8.6" />
+    </root>
+  </artifact>
+</component>

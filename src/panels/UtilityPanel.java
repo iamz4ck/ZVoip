@@ -5,6 +5,7 @@ import utilities.ChatClient;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 
 public class UtilityPanel extends JPanel {
 
@@ -80,11 +81,39 @@ public class UtilityPanel extends JPanel {
     }
 
     public void setActionListenersToButtons() {
+        messageHomeButton.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                chatClient.getDisplay().addSelectedPanel(chatClient.getDisplay().getChatCenterPanel(), GUIProtocol.CHAT_CENTER_PANEL_STATE);
+                return;
+
+            }
+        });
+        messageHomeButton.setToolTipText("Messaging");
+
+        sendFileButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+               /*
+                JFileChooser jFileChooser = new JFileChooser();
+                int choice = jFileChooser.showOpenDialog(jFileChooser);
+                if(choice != JFileChooser.APPROVE_OPTION) return;
+                File chosenFile = jFileChooser.getSelectedFile();
+                System.out.println(chosenFile.toString());
+                */
+
+                //Handle sendfile panel
+                chatClient.getDisplay().addSelectedPanel(chatClient.getDisplay().getSendFilePanel(),GUIProtocol.SEND_FILE_PANEL_STATE);
+            }
+        });
+        sendFileButton.setToolTipText("Send File (may not work)");
         settingsButton.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                chatClient.getDisplay().showSettingsPanel();
+                //chatClient.getDisplay().showSettingsPanel();
+                chatClient.getDisplay().addSelectedPanel(chatClient.getDisplay().getSettingsTabbedPanel(), GUIProtocol.SETTINGS_PANEL_STATE);
                 return;
             }
         });
@@ -123,25 +152,9 @@ public class UtilityPanel extends JPanel {
             }
         });
         speakerButton.setToolTipText("Speaker");
-        sendFileButton.addActionListener(new ActionListener() {
 
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // TODO Auto-generated method stub
 
-            }
-        });
-        sendFileButton.setToolTipText("Send file *not working*");
-        messageHomeButton.addActionListener(new ActionListener() {
 
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                chatClient.getDisplay().showCenterPanel();
-                return;
-
-            }
-        });
-        messageHomeButton.setToolTipText("Messaging");
     }
 }
 

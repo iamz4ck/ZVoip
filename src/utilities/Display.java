@@ -1,9 +1,6 @@
 package utilities;
 
-import panels.ChannelJTreePanel;
-import panels.ChatCenterPanel;
-import panels.SettingsTabbedPanel;
-import panels.UtilityPanel;
+import panels.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,11 +16,15 @@ public class Display {
     private Point mousePoint;
     //
 
+
     //Panels
     private ChatCenterPanel chatCenterPanel;
     private SettingsTabbedPanel settingsTabbedPanel;
     private UtilityPanel utilityPanel;
     private ChannelJTreePanel channelJTreePanel;
+    private SendFilePanel sendFilePanel;
+
+    String currentPanelShowing = "CENTER_PANEL";
 
 
     public Display(ChatClient chatClient) {
@@ -40,6 +41,54 @@ public class Display {
         initFrame();
     }
 
+    public String getCurrentPanelShowingState() {
+        return this.currentPanelShowing;
+    }
+
+    public void setCurrentPanelShowingState(String panelShowing) {
+        this.currentPanelShowing = panelShowing;
+    }
+
+    public void addSelectedPanel(JPanel jPanel, String panelName) {
+        String previousPanelShowing = this.currentPanelShowing;
+        System.out.println("Current panel showing 1: " + previousPanelShowing);
+        if(previousPanelShowing.equalsIgnoreCase(GUIProtocol.SETTINGS_PANEL_STATE)) {
+            frame.getContentPane().remove(settingsTabbedPanel);
+            frame.add(jPanel, BorderLayout.CENTER);
+            frame.pack();
+            frame.validate();
+            System.out.println("1");
+            this.currentPanelShowing = panelName;
+            return;
+        }
+        if(previousPanelShowing.equalsIgnoreCase(GUIProtocol.CHAT_CENTER_PANEL_STATE)) {
+            frame.getContentPane().remove(chatCenterPanel);
+            frame.add(jPanel, BorderLayout.CENTER);
+            frame.pack();
+            frame.validate();
+            System.out.println("2");
+            this.currentPanelShowing = panelName;
+            return;
+        }
+        if(previousPanelShowing.equalsIgnoreCase(GUIProtocol.SEND_FILE_PANEL_STATE)) {
+            frame.getContentPane().remove(sendFilePanel);
+            frame.add(jPanel, BorderLayout.CENTER);
+            frame.pack();
+            frame.validate();
+            System.out.println("3");
+            this.currentPanelShowing = panelName;
+            return;
+
+        }
+        System.out.println("Current Panel showing2 : " + currentPanelShowing);
+        /*
+         frame.getContentPane().remove(chatCenterPanel);
+        frame.add(settingsTabbedPanel, BorderLayout.CENTER);
+        frame.pack();
+        frame.validate();
+         */
+    }
+
     /**
      * Initializes all main panels
      * in main gui window
@@ -49,6 +98,7 @@ public class Display {
         chatCenterPanel = new ChatCenterPanel(chatClient);
         settingsTabbedPanel = new SettingsTabbedPanel(chatClient);
         channelJTreePanel = new ChannelJTreePanel(chatClient);
+        sendFilePanel = new SendFilePanel(chatClient);
     }
 
     /**
@@ -78,33 +128,19 @@ public class Display {
             }
         });
         frame.add(utilityPanel, BorderLayout.NORTH);
-        showCenterPanel();
+        //showCenterPanel();
+        addSelectedPanel(getChatCenterPanel(), "CENTER_PANEL");
         showChannelTreePanel();
     }
 
-    /**
-     * Removes ChatCenterPanel and
-     * Adds settings panel in the same
-     * BorderLayout location.
-     */
-    public void showSettingsPanel() {
-        frame.getContentPane().remove(chatCenterPanel);
-        frame.add(settingsTabbedPanel, BorderLayout.CENTER);
-        frame.pack();
-        frame.validate();
+
+    public SendFilePanel getSendFilePanel() {
+        return this.sendFilePanel;
     }
 
-    /**
-     * Removes settings panel if visible
-     * and puts ChatCenterPanel in Border
-     * Layout CENTER
-     */
-    public void showCenterPanel() {
-        frame.remove(settingsTabbedPanel);
-        frame.add(chatCenterPanel, BorderLayout.CENTER);
-        frame.pack();
-        frame.validate();
-    }
+
+
+
 
     /**
      * Adds ChannelJTreePanel to gui

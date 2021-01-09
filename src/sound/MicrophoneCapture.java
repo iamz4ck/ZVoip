@@ -3,7 +3,9 @@ package sound;
 import utilities.ChatClient;
 
 import javax.sound.sampled.*;
+import javax.swing.*;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class MicrophoneCapture extends Thread {
 
@@ -16,8 +18,9 @@ public class MicrophoneCapture extends Thread {
     /////////////////////
     private double currentRMSLevel;
     private SoundUtilities soundUtilities;
-    private ChatClient chatClient;
-    private boolean isRunning = false, isRecording = false;;
+    private final ChatClient chatClient;
+    private boolean isRunning = false, isRecording = false;
+
 
 
 
@@ -26,11 +29,14 @@ public class MicrophoneCapture extends Thread {
         init();
     }
 
+
+
     @Override
     public void run() {
         isRunning = true;
         while(isRunning && !chatClient.getSocket().isClosed()) {
             if(isRecording) {
+                System.out.println("Recording");
                 int length = 0;
                 byte[] tempBufferArray = new byte[microphone.getBufferSize()];
                 try {
@@ -50,6 +56,30 @@ public class MicrophoneCapture extends Thread {
 
     public void init() {
         soundUtilities = new SoundUtilities();
+        setupDefaultMicrophoneLine();
+
+    }
+
+    public void setupSelectedMicrophoneLine(Line.Info lineInfo) {
+        DataLine.Info dataLineInfo = (DataLine.Info)lineInfo;
+        AudioFormat[] formats = dataLineInfo.getFormats();
+        for(final AudioFormat format: formats) {
+            System.out.println("Formats: " + format);
+        }
+        try {
+            if(AudioSystem.isLineSupported(lineInfo)) {
+                System.out.println("line supported");
+            }
+           // DataLine.Info dataLineInfo = new DataLine.Info(lineInfo.getLineClass(), audioFormat);
+            microphone = (TargetDataLine) AudioSystem.getLine(dataLineInfo);
+            microphone.open();
+            microphone.start();
+        } catch (LineUnavailableException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void setupDefaultMicrophoneLine() {
         audioFormat = soundUtilities.getAudioFormat();
         DataLine.Info dataLineInfo = new DataLine.Info(TargetDataLine.class, audioFormat);
         try {
@@ -110,6 +140,7 @@ public class MicrophoneCapture extends Thread {
     public boolean getIsRecording() {
         return this.isRecording;
     }
+
 
 
 
